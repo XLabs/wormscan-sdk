@@ -255,7 +255,7 @@ class WormScanSDK {
    * Returns all the VAAs generated in a specific blockchain, optionally in a
    * specific emitter and optionally with a specific hash id.
    */
-  public async getSpecificVAA({
+  public async getVAA({
     chainId,
     emitter,
     sequence,
