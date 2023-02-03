@@ -241,7 +241,7 @@ class WormScanSDK {
    * Returns all VAAs. Output is paginated and can also be be sorted.
    */
   public async getVAAs({ page, pageSize, sortOrder }: IVAAsInput) {
-    return this.request<IVAAs>("/VAAs", { params: { page, pageSize, sortOrder } });
+    return this.request<IVAAs>("/vaas", { params: { page, pageSize, sortOrder } });
   }
 
   /**
