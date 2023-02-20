@@ -2,6 +2,9 @@ import { APIClient } from "src/api-client";
 import { ChainId, DefaultPageRequest, PageRequest, VAASearchCriteria } from "src/model";
 import { _get } from "src/utils/Objects";
 
+import crossChainResponse from "./mocks/crossChainResponse.json";
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export type Observation = {
   hash: string;
   guardianAddr: string;
@@ -27,6 +30,17 @@ export type VAACount = {
   count: number;
 };
 
+export type CrossChainActivity = {
+  chainId: ChainId;
+  percentage: number;
+  "num-txs": number;
+  destination: {
+    chainId: ChainId;
+    percentage: number;
+    "num-txs": number;
+  }[];
+}[];
+
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
 
@@ -44,6 +58,15 @@ export class GuardianNetwork {
     const payload = await this._client.doGet<any>("/vaas/vaa-counts");
     const result = _get(payload, "data", []);
     return result.map(this._mapVAACount);
+  }
+
+  // TODO: REPLACE MOCKED ENDPOINT FOR REAL ENDPOINT WHEN IT GETS DONE
+  // https://github.com/wormhole-foundation/wormhole-explorer/issues/139
+  async getCrossChainActivity(): Promise<CrossChainActivity> {
+    await delay(1200);
+    const payload = crossChainResponse;
+    const result = _get(payload, "txs", []);
+    return result;
   }
 
   async getObservation(): Promise<Observation[]>;

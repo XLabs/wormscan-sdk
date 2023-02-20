@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  build_deploy_gh_page:
+  build_deploy_package:
     name: Build lib on lib branch
     runs-on: ubuntu-latest
     steps:
