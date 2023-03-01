@@ -49,9 +49,12 @@ export class GuardianNetwork {
   async getVAA(criteria: VAASearchCriteria, page: PageRequest): Promise<VAADetail[]>;
   async getVAA(criteria: VAASearchCriteria = null, page: PageRequest = DefaultPageRequest) {
     const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", criteria);
-    const payload = await this._client.doGet<any>(effectivePath, { params: { ...page } });
+    const payload = await this._client.doGet<any>(effectivePath, { ...page });
     const result = _get(payload, "data", []);
-    return result.map(this._mapVAA);
+    if (result.map) {
+      return result.map(this._mapVAA);
+    }
+    return this._mapVAA(result);
   }
 
   async getVAACount(): Promise<VAACount[]> {
@@ -74,7 +77,7 @@ export class GuardianNetwork {
   async getObservation(criteria: VAASearchCriteria, page: PageRequest): Promise<Observation[]>;
   async getObservation(criteria: VAASearchCriteria = null, page: PageRequest = DefaultPageRequest) {
     const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/observations", criteria);
-    const payload = await this._client.doGet<[]>(effectivePath, { params: { ...page } });
+    const payload = await this._client.doGet<[]>(effectivePath, { ...page });
     return (payload || []).map(this._mapObservation);
   }
 
