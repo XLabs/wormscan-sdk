@@ -41,6 +41,13 @@ export type CrossChainActivity = {
   }[];
 }[];
 
+export type LastTxs = {
+  time: string;
+  count: number;
+}[];
+
+export type DateRange = "day" | "week" | "month";
+
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
 
@@ -70,6 +77,15 @@ export class GuardianNetwork {
     const payload = crossChainResponse;
     const result = _get(payload, "txs", []);
     return result;
+  }
+
+  async getLastTxs(range: DateRange): Promise<LastTxs> {
+    const timeSpan = { day: "1d", week: "1w", month: "1mo" };
+    const sampleRate = { day: "1h", week: "1d", month: "1d" };
+
+    return await this._client.doGet<LastTxs>(
+      `/last-txs?timeSpan=${timeSpan[range]}&sampleRate=${sampleRate[range]}`,
+    );
   }
 
   async getObservation(): Promise<Observation[]>;
