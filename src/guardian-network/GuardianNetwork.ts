@@ -48,8 +48,21 @@ export type LastTxs = {
 
 export type DateRange = "day" | "week" | "month";
 
+export interface ScoresOutput {
+  tvl: number;
+  total_volume: number;
+  total_tx_count: number;
+  "24h_volume": number;
+  "24h_tx_count": number;
+  "24h_messages": number;
+}
+
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
+
+  async getScores(): Promise<ScoresOutput> {
+    return await this._client.doGet<ScoresOutput>("/scorecards");
+  }
 
   async getVAA(): Promise<VAADetail[]>;
   async getVAA(criteria: VAASearchCriteria): Promise<VAADetail[]>;
