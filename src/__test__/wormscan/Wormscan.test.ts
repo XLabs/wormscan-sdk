@@ -25,10 +25,10 @@ describe("createClient", () => {
   });
 
   test("should return a new client for the given environment", () => {
-    createClient("http://api.staging.wormscan.io/api/v1");
+    createClient("https://api.staging.wormscan.io/api/v1");
     expect(mocked.create.mock.calls).toHaveLength(1);
     expect(mocked.create.mock.calls[0][0]).toStrictEqual({
-      baseURL: "http://api.staging.wormscan.io/api/v1",
+      baseURL: "https://api.staging.wormscan.io/api/v1",
     });
   });
 });

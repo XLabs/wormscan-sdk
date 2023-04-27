@@ -60,7 +60,7 @@ yarn tsc -init
 cat <<\EOF>>src/index.ts
 import { createClient } from '@xlabs-libs/wormscan-sdk';
 
-const client = createClient('http://api.staging.wormscan.io/api/v1');
+const client = createClient('https://api.staging.wormscan.io/api/v1');
 
 async function doCall() {
   console.log(await client.isHealth());
