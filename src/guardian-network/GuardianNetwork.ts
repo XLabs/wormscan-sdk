@@ -67,12 +67,24 @@ export class GuardianNetwork {
   async getVAA(): Promise<VAADetail[]>;
   async getVAA(criteria: VAASearchCriteria): Promise<VAADetail[]>;
   async getVAA(criteria: VAASearchCriteria, page: PageRequest): Promise<VAADetail[]>;
-  async getVAA(criteria: VAASearchCriteria = null, page: PageRequest = DefaultPageRequest) {
+  async getVAA(
+    criteria: VAASearchCriteria = null,
+    page: PageRequest & { parsedPayload?: boolean } = DefaultPageRequest,
+  ) {
     const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", criteria);
     const payload = await this._client.doGet<any>(effectivePath, { ...page });
     const result = _get(payload, "data", []);
     if (result.map) {
       return result.map(this._mapVAA);
+    }
+    return this._mapVAA(result);
+  }
+
+  async getVAAbyTxHash(params: { txHash: string; parsedPayload?: boolean }): Promise<VAADetail> {
+    const payload = await this._client.doGet<any>(`/vaas/`, { ...params });
+    const result = _get(payload, "data", []);
+    if (result.map) {
+      return result.map(this._mapVAA)[0];
     }
     return this._mapVAA(result);
   }
