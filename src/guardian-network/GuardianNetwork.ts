@@ -1,61 +1,22 @@
 import { APIClient } from "src/api-client";
-import { ChainId, DefaultPageRequest, PageRequest, VAASearchCriteria } from "src/model";
+import { DefaultPageRequest, PageRequest, VAASearchCriteria } from "src/model";
 import { _get } from "src/utils/Objects";
 
 import crossChainResponse from "./mocks/crossChainResponse.json";
+import {
+  AssetsByVolumeInput,
+  AssetsByVolumeOutput,
+  ChainPairsByTransfersInput,
+  ChainPairsByTransfersOutput,
+  CrossChainActivity,
+  DateRange,
+  LastTxs,
+  Observation,
+  ScoresOutput,
+  VAACount,
+  VAADetail,
+} from "./types";
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-export type Observation = {
-  hash: string;
-  guardianAddr: string;
-  signature: string;
-} & Omit<VAADetail, "guardianSetIndex" | "vaa" | "timestamp">;
-
-export type VAADetail = {
-  sequence: number;
-  id: string;
-  version: number;
-  emitterChainId: ChainId;
-  emitterAddr: string;
-  guardianSetIndex: number;
-  vaa: string;
-  timestamp: Date;
-  updatedAt: Date;
-  indexedAt: Date;
-  txHash: string;
-};
-
-export type VAACount = {
-  chainId: ChainId;
-  count: number;
-};
-
-export type CrossChainActivity = {
-  chainId: ChainId;
-  percentage: number;
-  "num-txs": number;
-  destination: {
-    chainId: ChainId;
-    percentage: number;
-    "num-txs": number;
-  }[];
-}[];
-
-export type LastTxs = {
-  time: string;
-  count: number;
-}[];
-
-export type DateRange = "day" | "week" | "month";
-
-export interface ScoresOutput {
-  tvl: number;
-  total_volume: number;
-  total_tx_count: number;
-  "24h_volume": number;
-  "24h_tx_count": number;
-  "24h_messages": number;
-}
 
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
@@ -81,7 +42,7 @@ export class GuardianNetwork {
   }
 
   async getVAAbyTxHash(params: { txHash: string; parsedPayload?: boolean }): Promise<VAADetail> {
-    const payload = await this._client.doGet<any>(`/vaas/`, { ...params });
+    const payload = await this._client.doGet<any>("/vaas/", { ...params });
     const result = _get(payload, "data", []);
     if (result.map) {
       return result.map(this._mapVAA)[0];
@@ -93,6 +54,27 @@ export class GuardianNetwork {
     const payload = await this._client.doGet<any>("/vaas/vaa-counts");
     const result = _get(payload, "data", []);
     return result.map(this._mapVAACount);
+  }
+
+  async getAssetsByVolume(
+    params: AssetsByVolumeInput = { timeSpan: "7d" },
+  ): Promise<AssetsByVolumeOutput[]> {
+    const payload = await this._client.doGet<AssetsByVolumeOutput>("/top-assets-by-volume", {
+      ...params,
+    });
+    const result = _get(payload, "assets", []);
+    return result;
+  }
+
+  async getChainPairsByTransfers(
+    params: ChainPairsByTransfersInput = { timeSpan: "7d" },
+  ): Promise<ChainPairsByTransfersOutput[]> {
+    const payload = await this._client.doGet<AssetsByVolumeOutput>(
+      "/top-chain-pairs-by-num-transfers",
+      { ...params },
+    );
+    const result = _get(payload, "chainPairs", []);
+    return result;
   }
 
   // TODO: REPLACE MOCKED ENDPOINT FOR REAL ENDPOINT WHEN IT GETS DONE
