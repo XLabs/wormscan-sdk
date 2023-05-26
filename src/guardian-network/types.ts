@@ -1,4 +1,4 @@
-import { ChainId } from "src/model";
+import { ChainId, PageRequest } from "src/model";
 
 export type Observation = {
   hash: string;
@@ -70,4 +70,51 @@ export interface ChainPairsByTransfersOutput {
   emitterChain: number;
   destinationChain: number;
   numberOfTransfers: string;
+}
+
+export interface GetVAAInput {
+  chainId: number;
+  emitter?: string;
+  seq?: number;
+  query?: {
+    parsedPayload?: boolean;
+  };
+  pagination?: PageRequest;
+}
+
+export interface GetVAAByTxHashInput {
+  query: {
+    txHash: string;
+    parsedPayload?: boolean;
+  };
+}
+
+export interface GlobalTxInput {
+  chainId: number;
+  emitter: string;
+  seq: number;
+  query?: {
+    parsedPayload?: boolean;
+  };
+}
+
+export interface GlobalTxOutput {
+  id: string;
+  originTx: {
+    chainId: number;
+    txHash: string;
+    timestamp: string;
+    status: string;
+  };
+  destinationTx: {
+    chainId: number;
+    status: string;
+    method: string;
+    txHash: string;
+    from: string;
+    to: string;
+    blockNumber: string;
+    timestamp: string;
+    updatedAt: string;
+  };
 }
