@@ -10,6 +10,10 @@ import {
   ChainPairsByTransfersOutput,
   CrossChainActivity,
   DateRange,
+  GetVAAByTxHashInput,
+  GetVAAInput,
+  GlobalTxInput,
+  GlobalTxOutput,
   LastTxs,
   Observation,
   ScoresOutput,
@@ -25,15 +29,19 @@ export class GuardianNetwork {
     return await this._client.doGet<ScoresOutput>("/scorecards");
   }
 
-  async getVAA(): Promise<VAADetail[]>;
-  async getVAA(criteria: VAASearchCriteria): Promise<VAADetail[]>;
-  async getVAA(criteria: VAASearchCriteria, page: PageRequest): Promise<VAADetail[]>;
-  async getVAA(
-    criteria: VAASearchCriteria = null,
-    page: PageRequest & { parsedPayload?: boolean } = DefaultPageRequest,
-  ) {
-    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", criteria);
-    const payload = await this._client.doGet<any>(effectivePath, { ...page });
+  async getVAA({
+    chainId,
+    emitter,
+    seq,
+    query,
+    pagination = DefaultPageRequest,
+  }: GetVAAInput): Promise<VAADetail> {
+    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", {
+      chainId,
+      emitter,
+      seq,
+    });
+    const payload = await this._client.doGet<VAADetail>(effectivePath, { ...query, ...pagination });
     const result = _get(payload, "data", []);
     if (result.map) {
       return result.map(this._mapVAA);
@@ -41,13 +49,23 @@ export class GuardianNetwork {
     return this._mapVAA(result);
   }
 
-  async getVAAbyTxHash(params: { txHash: string; parsedPayload?: boolean }): Promise<VAADetail> {
-    const payload = await this._client.doGet<any>("/vaas/", { ...params });
+  async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail> {
+    const payload = await this._client.doGet<VAADetail>("/vaas/", { ...query });
     const result = _get(payload, "data", []);
     if (result.map) {
       return result.map(this._mapVAA)[0];
     }
     return this._mapVAA(result);
+  }
+
+  async getGlobalTx({ chainId, emitter, seq, query }: GlobalTxInput): Promise<GlobalTxOutput> {
+    const payload = await this._client.doGet<GlobalTxOutput>(
+      `/global-tx/${chainId}/${emitter}/${seq}`,
+      {
+        ...query,
+      },
+    );
+    return payload;
   }
 
   async getVAACount(): Promise<VAACount[]> {
@@ -99,12 +117,24 @@ export class GuardianNetwork {
   async getObservation(criteria: VAASearchCriteria): Promise<Observation[]>;
   async getObservation(criteria: VAASearchCriteria, page: PageRequest): Promise<Observation[]>;
   async getObservation(criteria: VAASearchCriteria = null, page: PageRequest = DefaultPageRequest) {
-    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/observations", criteria);
+    const effectivePath = this._observationCriteriaToPathSegmentFilter("/observations", criteria);
     const payload = await this._client.doGet<[]>(effectivePath, { ...page });
     return (payload || []).map(this._mapObservation);
   }
 
-  private _vaaSearchCriteriaToPathSegmentFilter(prefix: string, criteria: VAASearchCriteria) {
+  private _vaaSearchCriteriaToPathSegmentFilter(
+    prefix: string,
+    criteria: {
+      chainId: number;
+      emitter: string;
+      seq: number;
+    },
+  ) {
+    const { chainId, emitter, seq } = criteria || {};
+    return [prefix, chainId, emitter, seq].filter(segment => !!segment).join("/");
+  }
+
+  private _observationCriteriaToPathSegmentFilter(prefix: string, criteria: VAASearchCriteria) {
     const { chainId, emmiter, specific } = criteria || {};
     const { sequence, signer, hash } = specific || {};
     return [prefix, chainId, emmiter, sequence, signer, hash]
