@@ -18,6 +18,16 @@ export type VAADetail = {
   updatedAt: Date;
   indexedAt: Date;
   txHash: string;
+  appId: string;
+  payload: {
+    amount: number;
+    fee: number;
+    payloadType: number;
+    toAddress: string;
+    toChain: number;
+    tokenAddress: string;
+    tokenChain: number;
+  };
 };
 
 export type VAACount = {

@@ -156,6 +156,8 @@ export class GuardianNetwork {
     signature,
     updatedAt,
     indexedAt,
+    appId,
+    payload,
   }: any): Observation => ({
     sequence,
     id,
@@ -168,6 +170,8 @@ export class GuardianNetwork {
     signature,
     updatedAt: new Date(updatedAt),
     indexedAt: new Date(indexedAt),
+    appId,
+    payload,
   });
 
   private _mapVAA = ({
@@ -182,6 +186,8 @@ export class GuardianNetwork {
     updatedAt,
     indexedAt,
     txHash,
+    appId,
+    payload,
   }: any): VAADetail => ({
     sequence,
     id,
@@ -194,5 +200,7 @@ export class GuardianNetwork {
     updatedAt: new Date(updatedAt),
     indexedAt: new Date(indexedAt),
     txHash,
+    appId,
+    payload,
   });
 }
