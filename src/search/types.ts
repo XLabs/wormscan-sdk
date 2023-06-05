@@ -24,3 +24,26 @@ export interface VAA {
   vaa: number[];
   version: number;
 }
+
+export type GetTokenInput = {
+  chainId: number;
+  tokenAddress: string;
+};
+
+export type GetTokenOutput = {
+  symbol: string;
+  coingeckoId: string;
+  decimals: number;
+};
+
+export type GetTokenPriceInput = {
+  coingeckoId: string;
+  query: {
+    date: string;
+    localization?: boolean;
+  };
+};
+
+export type GetTokenPriceOutput = {
+  usd: number;
+};
