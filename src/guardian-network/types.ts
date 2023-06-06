@@ -82,15 +82,33 @@ export interface ChainPairsByTransfersOutput {
   numberOfTransfers: string;
 }
 
-export interface GetVAAInput {
-  chainId: number;
-  emitter?: string;
-  seq?: number;
+export type GetVAAInput = (
+  | {
+      chainId?: number;
+      emitter?: string;
+      seq?: number;
+    }
+  | {
+      chainId: number;
+      emitter?: string;
+      seq?: number;
+    }
+  | {
+      chainId: number;
+      emitter: string;
+      seq?: number;
+    }
+  | {
+      chainId: number;
+      emitter: string;
+      seq: number;
+    }
+) & {
   query?: {
     parsedPayload?: boolean;
   };
   pagination?: PageRequest;
-}
+};
 
 export interface GetVAAByTxHashInput {
   query: {
