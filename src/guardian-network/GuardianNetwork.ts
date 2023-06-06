@@ -35,18 +35,20 @@ export class GuardianNetwork {
     seq,
     query,
     pagination = DefaultPageRequest,
-  }: GetVAAInput): Promise<VAADetail> {
+  }: GetVAAInput): Promise<VAADetail[]> {
     const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/vaas", {
       chainId,
       emitter,
       seq,
     });
-    const payload = await this._client.doGet<VAADetail>(effectivePath, { ...query, ...pagination });
+    const payload = await this._client.doGet<VAADetail[]>(effectivePath, {
+      ...query,
+      ...pagination,
+    });
     const result = _get(payload, "data", []);
     if (result.map) {
       return result.map(this._mapVAA);
     }
-    return this._mapVAA(result);
   }
 
   async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail> {
