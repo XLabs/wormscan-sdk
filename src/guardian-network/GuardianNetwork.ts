@@ -2,12 +2,12 @@ import { APIClient } from "src/api-client";
 import { DefaultPageRequest, PageRequest, VAASearchCriteria } from "src/model";
 import { _get } from "src/utils/Objects";
 
-import crossChainResponse from "./mocks/crossChainResponse.json";
 import {
   AssetsByVolumeInput,
   AssetsByVolumeOutput,
   ChainPairsByTransfersInput,
   ChainPairsByTransfersOutput,
+  CrossChainActivityInput,
   CrossChainActivity,
   DateRange,
   GetVAAByTxHashInput,
@@ -20,7 +20,6 @@ import {
   VAACount,
   VAADetail,
 } from "./types";
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export class GuardianNetwork {
   constructor(private readonly _client: APIClient) {}
@@ -97,11 +96,19 @@ export class GuardianNetwork {
     return result;
   }
 
-  // TODO: REPLACE MOCKED ENDPOINT FOR REAL ENDPOINT WHEN IT GETS DONE
-  // https://github.com/wormhole-foundation/wormhole-explorer/issues/139
-  async getCrossChainActivity(): Promise<CrossChainActivity> {
-    await delay(1200);
-    const payload = crossChainResponse;
+  async getCrossChainActivity({
+    by,
+    startTime,
+  }: CrossChainActivityInput): Promise<CrossChainActivity> {
+    const isoDate = startTime.toISOString();
+
+    // format from '2023-06-08T12:34:56.789Z' to '20230608T123456Z'
+    const start_time = isoDate.replace(/[:-]/g, "").replace(/\.\d{3}/, "");
+
+    const payload = await this._client.doGet<[]>("/x-chain-activity/", {
+      start_time,
+      by,
+    });
     const result = _get(payload, "txs", []);
     return result;
   }

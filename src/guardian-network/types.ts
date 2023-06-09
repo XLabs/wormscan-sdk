@@ -35,14 +35,21 @@ export type VAACount = {
   count: number;
 };
 
+export type CrossChainBy = "tx" | "notional";
+
+export type CrossChainActivityInput = {
+  startTime: Date;
+  by: CrossChainBy;
+};
+
 export type CrossChainActivity = {
-  chainId: ChainId;
+  chain: ChainId;
   percentage: number;
-  "num-txs": number;
-  destination: {
-    chainId: ChainId;
+  volume: number;
+  destinations: {
+    chain: ChainId;
     percentage: number;
-    "num-txs": number;
+    volume: number;
   }[];
 }[];
 
