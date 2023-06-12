@@ -1,3 +1,4 @@
+import { PageRequest } from "src/model";
 import { Pagination } from "src/types";
 
 export interface FindVAAByAddressOutput {
@@ -46,4 +47,24 @@ export type GetTokenPriceInput = {
 
 export type GetTokenPriceOutput = {
   usd: number;
+};
+
+export type GetTransactionsInput = {
+  query?: {
+    address?: string;
+  };
+  pagination?: PageRequest;
+};
+
+export type GetTransactionsOutput = {
+  id: string;
+  timestamp: string;
+  txHash: string;
+  originChain: number;
+  destinationAddress?: string;
+  destinationChain?: number;
+  tokenAmount?: string;
+  usdAmount?: string;
+  symbol?: string;
+  status: string;
 };
