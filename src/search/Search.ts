@@ -1,12 +1,17 @@
 import axios, { AxiosError } from "axios";
 import { APIClient } from "src/api-client";
 import { COINGECKO_URL } from "src/consts";
+import { DefaultPageRequest } from "src/model";
+import { _get } from "src/utils/Objects";
+
 import {
   FindVAAByAddressOutput,
   GetTokenInput,
   GetTokenOutput,
   GetTokenPriceInput,
   GetTokenPriceOutput,
+  GetTransactionsInput,
+  GetTransactionsOutput,
 } from "./types";
 
 interface FindVAAByAddressInput {
@@ -27,6 +32,18 @@ export class Search {
       page,
       pageSize,
     });
+    return result;
+  }
+
+  async getTransactions({
+    query,
+    pagination = DefaultPageRequest,
+  }: GetTransactionsInput): Promise<GetTransactionsOutput[]> {
+    const payload = await this._client.doGet<GetTransactionsOutput[]>(`/transactions`, {
+      ...query,
+      ...pagination,
+    });
+    const result = _get(payload, "transactions", []);
     return result;
   }
 
