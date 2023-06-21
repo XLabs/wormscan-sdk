@@ -60,6 +60,7 @@ export type GetTransactionsOutput = {
   id: string;
   timestamp: string;
   txHash: string;
+  originAddress: string;
   originChain: number;
   destinationAddress?: string;
   destinationChain?: number;
