@@ -139,6 +139,7 @@ export interface GlobalTxOutput {
     chainId: number;
     txHash: string;
     timestamp: string;
+    from: string;
     status: string;
   };
   destinationTx: {
