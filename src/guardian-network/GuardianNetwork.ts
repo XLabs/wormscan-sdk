@@ -101,15 +101,10 @@ export class GuardianNetwork {
 
   async getCrossChainActivity({
     by,
-    startTime,
+    timeSpan,
   }: CrossChainActivityInput): Promise<CrossChainActivity> {
-    const isoDate = startTime.toISOString();
-
-    // format from '2023-06-08T12:34:56.789Z' to '20230608T123456Z'
-    const start_time = isoDate.replace(/[:-]/g, "").replace(/\.\d{3}/, "");
-
     const payload = await this._client.doGet<[]>("/x-chain-activity/", {
-      start_time,
+      timeSpan,
       by,
     });
     const result = _get(payload, "txs", []);

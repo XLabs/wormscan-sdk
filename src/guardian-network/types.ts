@@ -38,7 +38,7 @@ export type VAACount = {
 export type CrossChainBy = "tx" | "notional";
 
 export type CrossChainActivityInput = {
-  startTime: Date;
+  timeSpan: string;
   by: CrossChainBy;
 };
 
