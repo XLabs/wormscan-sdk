@@ -12,6 +12,7 @@ export type VAADetail = {
   version: number;
   emitterChainId: ChainId;
   emitterAddr: string;
+  emitterNativeAddr: string;
   guardianSetIndex: number;
   vaa: string;
   timestamp: Date;
