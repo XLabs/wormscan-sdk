@@ -61,6 +61,8 @@ export type GetTransactionsOutput = {
   timestamp: string;
   txHash: string;
   originAddress: string;
+  emitterAddress: string;
+  emitterNativeAddress: string;
   originChain: number;
   destinationAddress?: string;
   destinationChain?: number;
