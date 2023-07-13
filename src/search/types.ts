@@ -1,3 +1,4 @@
+import { GlobalTxOutput } from "src/guardian-network/types";
 import { PageRequest } from "src/model";
 import { Pagination } from "src/types";
 
@@ -49,7 +50,18 @@ export type GetTokenPriceOutput = {
   usd: number;
 };
 
-export type GetTransactionsInput = {
+export type GetTransactionsInput = (
+  | {
+      chainId?: number;
+      emitter?: string;
+      seq?: number;
+    }
+  | {
+      chainId: number;
+      emitter: string;
+      seq: number;
+    }
+) & {
   query?: {
     address?: string;
   };
@@ -58,16 +70,42 @@ export type GetTransactionsInput = {
 
 export type GetTransactionsOutput = {
   id: string;
-  timestamp: string;
+  timestamp: Date;
   txHash: string;
-  originAddress: string;
+  emitterChain: number;
   emitterAddress: string;
   emitterNativeAddress: string;
-  originChain: number;
-  destinationAddress?: string;
-  destinationChain?: number;
-  tokenAmount?: string;
-  usdAmount?: string;
-  symbol?: string;
-  status: string;
+  tokenAmount: string;
+  usdAmount: string;
+  symbol: string;
+  payload: {
+    amount?: string;
+    callerAppId?: string;
+    fee?: string;
+    fromAddress?: string;
+    parsedPayload?: any;
+    payload?: string;
+    payloadType?: number;
+    toAddress?: string;
+    toChain?: number;
+    tokenAddress?: string;
+    tokenChain?: number;
+    decimals?: number;
+    name?: string;
+    symbol?: string;
+  };
+  standardizedProperties: {
+    amount: string;
+    appIds: string[];
+    fee: string;
+    feeAddress: string;
+    feeChain: number;
+    fromAddress: string;
+    fromChain: number;
+    toAddress: string;
+    toChain: number;
+    tokenAddress: string;
+    tokenChain: number;
+  };
+  globalTx: GlobalTxOutput;
 };
