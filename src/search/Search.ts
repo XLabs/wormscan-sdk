@@ -36,15 +36,28 @@ export class Search {
   }
 
   async getTransactions({
+    chainId,
+    emitter,
+    seq,
     query,
     pagination = DefaultPageRequest,
-  }: GetTransactionsInput): Promise<GetTransactionsOutput[]> {
-    const payload = await this._client.doGet<GetTransactionsOutput[]>(`/transactions`, {
+  }: GetTransactionsInput): Promise<GetTransactionsOutput | GetTransactionsOutput[]> {
+    const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/transactions", {
+      chainId,
+      emitter,
+      seq,
+    });
+
+    const payload = await this._client.doGet(effectivePath, {
       ...query,
       ...pagination,
     });
-    const result = _get(payload, "transactions", []);
-    return result;
+
+    const result = _get(payload, "transactions", null);
+
+    // When returns GetTransactionsOutput[] differs when returns a single GetTransactionsOutput
+    if (result) return result;
+    return payload as GetTransactionsOutput;
   }
 
   async getToken({ chainId, tokenAddress }: GetTokenInput): Promise<GetTokenOutput> {
@@ -68,5 +81,17 @@ export class Search {
       const errors = e as Error | AxiosError;
       throw new Error(errors.message);
     }
+  }
+
+  private _vaaSearchCriteriaToPathSegmentFilter(
+    prefix: string,
+    criteria: {
+      chainId: number;
+      emitter: string;
+      seq: number;
+    },
+  ) {
+    const { chainId, emitter, seq } = criteria || {};
+    return [prefix, chainId, emitter, seq].filter(segment => !!segment).join("/");
   }
 }

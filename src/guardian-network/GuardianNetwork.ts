@@ -45,21 +45,18 @@ export class GuardianNetwork {
       ...pagination,
     });
 
-    const result = _get(payload, "data", []);
+    const result = _get(payload, "data", null);
 
-    if (result.map) {
-      return result.map(this._mapVAA);
-    }
-    return this._mapVAA(result);
+    // When returns VAADetail[] differs when returns a single VAADetail
+    if (result) return result;
+    return payload as VAADetail;
   }
 
   async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail> {
     const payload = await this._client.doGet<VAADetail>("/vaas/", { ...query });
     const result = _get(payload, "data", []);
-    if (result.map) {
-      return result.map(this._mapVAA)[0];
-    }
-    return this._mapVAA(result);
+
+    return result[0];
   }
 
   async getGlobalTx({ chainId, emitter, seq, query }: GlobalTxInput): Promise<GlobalTxOutput> {
@@ -126,7 +123,7 @@ export class GuardianNetwork {
   async getObservation(criteria: VAASearchCriteria = null, page: PageRequest = DefaultPageRequest) {
     const effectivePath = this._observationCriteriaToPathSegmentFilter("/observations", criteria);
     const payload = await this._client.doGet<[]>(effectivePath, { ...page });
-    return (payload || []).map(this._mapObservation);
+    return payload || [];
   }
 
   private _vaaSearchCriteriaToPathSegmentFilter(
@@ -150,69 +147,4 @@ export class GuardianNetwork {
   }
 
   private _mapVAACount = ({ chainId, count }: any): VAACount => ({ chainId, count });
-
-  private _mapObservation = ({
-    sequence,
-    id,
-    version,
-    emitterChain,
-    emitterAddr,
-    emitterNativeAddr,
-    hash,
-    txHash,
-    guardianAddr,
-    signature,
-    updatedAt,
-    indexedAt,
-    appId,
-    payload,
-  }: any): Observation => ({
-    sequence,
-    id,
-    version,
-    emitterChainId: emitterChain,
-    emitterAddr,
-    emitterNativeAddr,
-    hash,
-    txHash,
-    guardianAddr,
-    signature,
-    updatedAt: new Date(updatedAt),
-    indexedAt: new Date(indexedAt),
-    appId,
-    payload,
-  });
-
-  private _mapVAA = ({
-    sequence,
-    id,
-    version,
-    emitterChain,
-    emitterAddr,
-
-    emitterNativeAddr,
-    guardianSetIndex,
-    vaa,
-    timestamp,
-    updatedAt,
-    indexedAt,
-    txHash,
-    appId,
-    payload,
-  }: any): VAADetail => ({
-    sequence,
-    id,
-    version,
-    emitterChainId: emitterChain,
-    emitterAddr,
-    emitterNativeAddr,
-    guardianSetIndex,
-    vaa,
-    timestamp: new Date(timestamp),
-    updatedAt: new Date(updatedAt),
-    indexedAt: new Date(indexedAt),
-    txHash,
-    appId,
-    payload,
-  });
 }

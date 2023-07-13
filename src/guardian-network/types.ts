@@ -21,8 +21,12 @@ export type VAADetail = {
   txHash: string;
   appId: string;
   payload: {
-    amount: number;
-    fee: number;
+    amount: string;
+    callerAppId: string;
+    fee: string;
+    fromAddress: string;
+    parsedPayload: any;
+    payload: string;
     payloadType: number;
     toAddress: string;
     toChain: number;
