@@ -63,7 +63,7 @@ export type LastTxs = {
   count: number;
 }[];
 
-export type DateRange = "day" | "week" | "month";
+export type DateRange = "day" | "week" | "month" | "3-month";
 
 export interface ScoresOutput {
   tvl: string;
