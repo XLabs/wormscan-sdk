@@ -109,8 +109,8 @@ export class GuardianNetwork {
   }
 
   async getLastTxs(range: DateRange): Promise<LastTxs> {
-    const timeSpan = { day: "1d", week: "1w", month: "1mo" };
-    const sampleRate = { day: "1h", week: "1d", month: "1d" };
+    const timeSpan = { day: "1d", week: "1w", month: "1mo", "3-month": "3mo" };
+    const sampleRate = { day: "1h", week: "1d", month: "1d", "3-month": "1d" };
 
     return await this._client.doGet<LastTxs>(
       `/last-txs?timeSpan=${timeSpan[range]}&sampleRate=${sampleRate[range]}`,
