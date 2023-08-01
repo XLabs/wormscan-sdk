@@ -1,6 +1,6 @@
 {
   "name": "@xlabs-libs/wormscan-sdk",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "private": false,
   "source": "src/index.ts",
   "main": "dist/main.js",
