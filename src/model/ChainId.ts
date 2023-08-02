@@ -26,7 +26,7 @@ export enum ChainId {
   PythNet = 26,
   Xpla = 28,
   Btc = 29,
-  Base = 29,
+  Base = 30,
   Sei = 32,
   Sepolia = 10002,
   Wormchain = 3104,
