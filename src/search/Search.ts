@@ -92,6 +92,7 @@ export class Search {
     },
   ) {
     const { chainId, emitter, seq } = criteria || {};
-    return [prefix, chainId, emitter, seq].filter(segment => !!segment).join("/");
+    const seqValue = seq === 0 ? "0" : seq;
+    return [prefix, chainId, emitter, seqValue].filter(segment => !!segment).join("/");
   }
 }
