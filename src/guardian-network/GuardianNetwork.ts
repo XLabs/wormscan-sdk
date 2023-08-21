@@ -52,11 +52,11 @@ export class GuardianNetwork {
     return payload as VAADetail;
   }
 
-  async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail> {
+  async getVAAbyTxHash({ query }: GetVAAByTxHashInput): Promise<VAADetail[]> {
     const payload = await this._client.doGet<VAADetail>("/vaas/", { ...query });
     const result = _get(payload, "data", []);
 
-    return result[0];
+    return result;
   }
 
   async getGlobalTx({ chainId, emitter, seq, query }: GlobalTxInput): Promise<GlobalTxOutput> {

@@ -10,7 +10,7 @@ export type VAADetail = {
   sequence: number;
   id: string;
   version: number;
-  emitterChainId: ChainId;
+  emitterChain: ChainId;
   emitterAddr: string;
   emitterNativeAddr: string;
   guardianSetIndex: number;

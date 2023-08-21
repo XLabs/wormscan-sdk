@@ -41,7 +41,7 @@ export class Search {
     seq,
     query,
     pagination = DefaultPageRequest,
-  }: GetTransactionsInput): Promise<GetTransactionsOutput | GetTransactionsOutput[]> {
+  }: GetTransactionsInput): Promise<GetTransactionsOutput> {
     const effectivePath = this._vaaSearchCriteriaToPathSegmentFilter("/transactions", {
       chainId,
       emitter,
