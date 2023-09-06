@@ -19,6 +19,7 @@ export enum ChainId {
   Neon = 17,
   Terra2 = 18,
   Injective = 19,
+  Osmosis = 20,
   Sui = 21,
   Aptos = 22,
   Arbitrum = 23,
