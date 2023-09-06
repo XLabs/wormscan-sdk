@@ -141,6 +141,17 @@ export interface GlobalTxInput {
 export interface GlobalTxOutput {
   id: string;
   originTx: {
+    attribute?: {
+      type: string;
+      from: string;
+      status: string;
+      txHash: string;
+      value: {
+        originAddress: string;
+        originChainId: ChainId;
+        originTxHash: string;
+      };
+    };
     chainId: number;
     txHash: string;
     timestamp: string;
